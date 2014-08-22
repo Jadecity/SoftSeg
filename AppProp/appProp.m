@@ -14,7 +14,7 @@ if exist('U.mat','file')
     A = U(1:100,1:100);
 else
     %get size
-    [imsz.rows, imsz.cols, imsz.channels] = size(imin);
+  [imsz.rows, imsz.cols, imsz.channels] = size(imin);
 
     %randomly sample 100 points in origin image
     sampleDim = 10;
@@ -30,9 +30,9 @@ else
     %compute U
     delta_a_2 = 500;
     delta_s_2 = 0.05;
-    A = zeros(sampleDim, sampleDim);
-    B = zeros(sampleDim, imsz.rows - sampleDim);
-    %B = zeros(sampleDim, imsz.rows);
+    A = zeros(sampleDim^2, sampleDim^2);
+    B = zeros(sampleDim^2, imsz.rows*imsz.cols - sampleDim^2);
+
     fv_1 = zeros(1,3);
     fv_2 = zeros(1,3);
     for c=1:sampleDim^2
@@ -54,14 +54,14 @@ else
                      exp(-norm(xi - [srows(sr2), scols(sc2)])/delta_s_2);
         end
 
-        rcnt = sampleDim^2;
+        rcnt = 0;
         elenum = imsz.rows*imsz.cols;
         cnt = 0;
         for r=1:elenum
             sc3 = mod(r, imsz.cols);
             sr3 = ceil(r/imsz.cols);
             if sc3 == 0
-                sc3 = imsz.rows;
+                sc3 = imsz.cols;
             end
 
             if(any(scols == sc3) && any(srows == sr3))
@@ -70,23 +70,20 @@ else
             end
 
             rcnt = rcnt + 1;
-            if rcnt > imsz.rows*imsz.cols
-                rcnt
-            end
             fv_2 = [fvec_all(sr3,sc3,1), fvec_all(sr3,sc3,2), fvec_all(sr3,sc3,3)];
             B(c, rcnt)= exp(-norm(fv_1 - fv_2)/delta_a_2)*...
                      exp(-norm(xi - [sr3, sc3])/delta_s_2); 
         end
     end
     U = [A;B'];
-    size(A);
-    size(B');
-    save U.mat U;
+    size(A)
+    size(B')
+    save U.mat;
 end
 lamda = mean(w);
 tic
 one  = 0.5*lamda*U*(A\(U'*w'));
-two = U*(A\(U'*ones(n,1)));
+two = U*(A\(U'*ones(imsz.rows*imsz.cols,1)));
 d = one + two;
 toc
 e = d;
