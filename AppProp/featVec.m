@@ -16,7 +16,6 @@ ft = ones(3,3)/wsz;
 avg_img1 = imfilter(img(:,:,1), ft);
 avg_img2 = imfilter(img(:,:,2), ft);
 avg_img3 = imfilter(img(:,:,3), ft);
-tic
 for r = 2:rows
     for c = 2:cols
         wnd = paddedImg(r-1:r+1,c-1:c+1,:);
