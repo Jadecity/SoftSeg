@@ -9,8 +9,6 @@ function [L, contour] = graph_segment(img, neighbor_radius, coefficient, min_siz
 %L: labeled image
 %contour: 
 
-%add the neccessary path:
-addpath('CoherenceFilter');
 %normalize data:
 img = im2double(img);
 img = CoherenceFilter(img,struct('T',5,'rho',.5,'Scheme','R'));
@@ -20,7 +18,7 @@ for i= 1:n_channel
     img_component = img(:, :, i);
     img_min = min(img_component(:));
     img_range = max(img_component(:)) - img_min;
-    img_component = (img_component - img_min) / img_range;
+    img(:,:,i) = (img_component - img_min) / img_range;
 end
 
 L = Graph_seg_gray(img, neighbor_radius, coefficient, min_size);
