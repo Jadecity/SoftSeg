@@ -18,8 +18,8 @@ else
 
     %randomly sample 100 points in origin image
     sampleDim = 10;
-    srows = sort(randi(imsz.rows, 1, sampleDim));
-    scols = sort(randi(imsz.cols, 1, sampleDim));
+    srows = sort(randperm(imsz.rows, sampleDim));
+    scols = sort(randperm(imsz.cols, sampleDim));
     %create random selected image
     im = imin(srows, scols);
 
@@ -29,7 +29,7 @@ else
 
     %compute U
     delta_a_2 = 500;
-    delta_s_2 = 0.05;
+    delta_s_2 = 10;
     A = zeros(sampleDim^2, sampleDim^2);
     B = zeros(sampleDim^2, imsz.rows*imsz.cols - sampleDim^2);
 
@@ -42,14 +42,14 @@ else
             sc = sampleDim;
         end
         xi = [srows(sr),scols(sc)];
-        fv_1 = [fvec(sr,sc,1), fvec(sr,sc,2), fvec(sr,sc,3)];
+        fv_1 = squeeze(fvec(sr,sc,:));
         for r=1:sampleDim^2
             sc2 = mod(r, sampleDim);
             if sc2 == 0
                 sc2 = sampleDim;
             end
             sr2 = ceil(r/sampleDim);
-            fv_2 = [fvec(sr2,sc2,1), fvec(sr2,sc2,2), fvec(sr2,sc2,3)];
+            fv_2 = squeeze(fvec(sr2,sc2,:));
             A(r,c) = exp(-norm(fv_1 - fv_2)/delta_a_2)*...
                      exp(-norm(xi - [srows(sr2), scols(sc2)])/delta_s_2);
         end
@@ -70,7 +70,7 @@ else
             end
 
             rcnt = rcnt + 1;
-            fv_2 = [fvec_all(sr3,sc3,1), fvec_all(sr3,sc3,2), fvec_all(sr3,sc3,3)];
+            fv_3 = squeeze(fvec_all(sr3,sc3,:));
             B(c, rcnt)= exp(-norm(fv_1 - fv_2)/delta_a_2)*...
                      exp(-norm(xi - [sr3, sc3])/delta_s_2); 
         end
@@ -80,13 +80,17 @@ else
     size(B')
     save U.mat;
 end
-lamda = mean(w);
+lamda = mean(w)
 tic
 one  = 0.5*lamda*U*(A\(U'*w'));
 two = U*(A\(U'*ones(imsz.rows*imsz.cols,1)));
 d = one + two;
 toc
-e = d;
+tic
+D = spdiags(d(:),0,imsz.rows*imsz.cols, imsz.rows*imsz.cols);
+itm1 = D\(U*(A\(U'*(w'.*g'))));
+itm2 = D\(U*((-A+U'*(D\U))\(U'*(D\(U*(A\(U'*(w'.*g'))))))));
 
+e = 0.5/lamda*(itm1-itm2);
+toc
 end
-
