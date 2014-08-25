@@ -23,7 +23,9 @@ img_gray =  double(rgb2gray(img));
 
 d1 = 4;
 d2 = 4;
-gaborArray = gaborFilterBank(5,8,39,39);
+gaborArray = gaborFilterBank(4,6,39,39);
+[u,v] = size(gaborArray);
+gaborResult = cell(u,v);
 gabor = cell(1,lnum);
 for ln=1:lnum
     mask = (L == labels(ln));
@@ -31,56 +33,17 @@ for ln=1:lnum
         mean2(img3(mask == 1))];
     
     %filtering image by each Gabor filter
-    [u,v] = size(gaborArray);
-    gaborResult = cell(u,v);
+    fv = zeros(1,48);
+    cnt = 1;
     for i = 1:u
         for j = 1:v
             gaborResult{i,j} = roifilt2(gaborArray{i,j},img_gray,mask);
+            fv(cnt:cnt+1) = [ mean2(gaborResult{i,j}), std2(gaborResult{i,j})];
+            cnt = cnt + 2;
         end
     end
+    gabor{1,ln} = fv;
     
-    %Gabor feature vector extraction
-    [n,m] = size(img_gray);
-    s = (n*m)/(d1*d2);
-    line = s*u*v;
-    featureVector = zeros(line,1);
-    c = 0;
-    for i = 1:u
-        for j = 1:v
-            c = c+1;
-            gaborAbs = abs(gaborResult{i,j});
-            gaborAbs = downsample(gaborAbs,d1);
-            gaborAbs = downsample(gaborAbs.',d2);
-            gaborAbs = reshape(gaborAbs.',[],1);
-
-            % Normalized to zero mean and unit variance. (if not applicable, please comment this line)
-            gaborAbs = (gaborAbs-mean(gaborAbs))/std(gaborAbs,1);
-
-            featureVector(((c-1)*s+1):(c*s)) = gaborAbs;
-        end
-    end
-    gabor{1,ln} = featureVector;
-    
-%     %% Show filtered images
-% 
-%     % Show real parts of Gabor-filtered images
-%     figure('NumberTitle','Off','Name','Real parts of Gabor filters');
-%     for i = 1:u
-%         for j = 1:v        
-%             subplot(u,v,(i-1)*v+j)    
-%             imshow(real(gaborResult{i,j}),[]);
-%         end
-%     end
-%     
-%     
-%     % Show magnitudes of Gabor-filtered images
-%     figure('NumberTitle','Off','Name','Magnitudes of Gabor filters');
-%     for i = 1:u
-%         for j = 1:v        
-%             subplot(u,v,(i-1)*v+j)    
-%             imshow(abs(gaborResult{i,j}),[]);
-%         end
-%     end
 end
 
 end
