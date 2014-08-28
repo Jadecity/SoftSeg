@@ -1,12 +1,16 @@
-function [ labelmat, avgcolor, gabor ] = seedfeat( img )
+function [ labelmat, edges, avgcolor, gabor ] = seedfeat( img )
 %SEEDFEAT extract color and texture feature for oversegmented patchs
-%   img, input image, should be in Lab color space
-%   
+%   img, input image, should be in rgb color space
+%   Author : lvhao
+%   Email : lvhaoexp@163.com
+%   Date : 2014-08-27
+
 addpath('Graph_seg');
 addpath('Graph_seg/CoherenceFilter');
 addpath('Gabor');
+addpath('c_inference_ver2_2');
 %adjacent neighborhood  model:
-[L, ~] = graph_segment(img, 1, 3, 40);
+[L, edges] = graph_segment(img, 1, 3, 40);
 %subplot(1, 1, 1), imshow(label2rgb(L)), title('adjacent neighborhood based segmentation');
 labels = unique(L);
 lnum = size(labels, 1);
@@ -21,8 +25,6 @@ img2 = img_lab(:,:,2);
 img3 = img_lab(:,:,3);
 img_gray =  double(rgb2gray(img));
 
-d1 = 4;
-d2 = 4;
 gaborArray = gaborFilterBank(4,6,39,39);
 [u,v] = size(gaborArray);
 gaborResult = cell(u,v);
