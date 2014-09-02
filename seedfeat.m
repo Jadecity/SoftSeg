@@ -1,6 +1,11 @@
-function [ labelmat, edges, avgcolor, gabor ] = seedfeat( img )
+function [ labelmat, edges, avgcolor, gabor, pixels ] = seedfeat( img )
 %SEEDFEAT extract color and texture feature for oversegmented patchs
 %   img, input image, should be in rgb color space
+%   labelmat: patch labeled image, M-by-N
+%   edges: binary edge image, M-by-N
+%   avgcolor: label num rows and 3 columns in Lab order
+%   gabor: a cell line with label num elements, each one is 48 dimemsion
+%   pixels: a cell line with label num elements, each one has K-by-3 matrix, K is # of pixels in that patch,elements order is the same with gabor
 %   Author : lvhao
 %   Email : lvhaoexp@163.com
 %   Date : 2014-08-27
@@ -29,11 +34,15 @@ gaborArray = gaborFilterBank(4,6,39,39);
 [u,v] = size(gaborArray);
 gaborResult = cell(u,v);
 gabor = cell(1,lnum);
+pixels = cell(1,lnum);
 for ln=1:lnum
     mask = (L == labels(ln));
     avgcolor(ln,:) = [mean2(img1(mask == 1)), mean2(img2(mask == 1)),...
         mean2(img3(mask == 1))];
-    
+    pblock = cat(3,img1(mask == 1), img2(mask == 1), img3(mask == 1));
+    [pr,pc,~] = size(pblock);
+    pixels{ln} = reshape(pr*pc, 3);
+
     %filtering image by each Gabor filter
     fv = zeros(1,48);
     cnt = 1;
