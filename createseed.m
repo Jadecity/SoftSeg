@@ -1,7 +1,7 @@
 function [ seedmask ] = createseed( img, ftdb )
 %CREATESEED given an image, create 5 to 12 seed areas
 %   function [ seedmask ] = createseed( img )
-%   img, is an input image,M-by-N-by-3, should be in RGB color space
+%   img, is an input image,M-by-N-by-3, should be in Lab color space
 %   seedmask, output is a M-by-N matrix, with seed areas labeled with an
 %   integer.
 %   ftdb, feature database, here is a 2-by-200 cell,cell in first line is
