@@ -31,7 +31,7 @@ else
     delta_a_2 = 500;
     delta_s_2 = 10;
     A = zeros(sampleDim^2, sampleDim^2);
-    B = zeros(sampleDim^2, imsz.rows*imsz.cols - sampleDim^2);
+    B = zeros(  imsz.rows*imsz.cols - sampleDim^2, sampleDim^2 );
 
     fv_1 = zeros(1,3);
     fv_2 = zeros(1,3);
@@ -71,11 +71,11 @@ else
 
             rcnt = rcnt + 1;
             fv_3 = squeeze(fvec_all(sr3,sc3,:));
-            B(c, rcnt)= exp(-norm(fv_1 - fv_2)/delta_a_2)*...
+            B(rcnt, c)= exp(-norm(fv_1 - fv_2)/delta_a_2)*...
                      exp(-norm(xi - [sr3, sc3])/delta_s_2); 
         end
     end
-    U = [A;B'];
+    U = [A;B];
     size(A)
     size(B')
     save U.mat;
