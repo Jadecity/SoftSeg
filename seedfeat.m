@@ -41,7 +41,7 @@ for ln=1:lnum
         mean2(img3(mask == 1))];
     pblock = cat(3,img1(mask == 1), img2(mask == 1), img3(mask == 1));
     [pr,pc,~] = size(pblock);
-    pixels{ln} = reshape(pr*pc, 3);
+    pixels{ln} = reshape(pblock, pr*pc, 3);
 
     %filtering image by each Gabor filter
     fv = zeros(1,48);
