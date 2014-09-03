@@ -1,5 +1,10 @@
 %this script is to create universal feature database used for  segmentation
 
+addpath('Graph_seg');
+addpath('Graph_seg/CoherenceFilter');
+addpath('Gabor');
+addpath('c_inference_ver2_2');
+
 %first allocate memory
 ftdb = cell(2,200);
 
