@@ -29,9 +29,9 @@ end
 gabordb = zeros( gabornum, 48 );
 cnt = 1;
 for n=1:imgnum
-  labelnum = size(featdata{n},2);
+  labelnum = size(featdata{n}.gabor,2);
   for m = 1:labelnum
-    gabordb(cnt,:) = featdata{n}{m};
+    gabordb(cnt,:) = featdata{n}.gabor{m};
   end
 end
 
