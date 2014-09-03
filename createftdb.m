@@ -32,6 +32,7 @@ for n=1:imgnum
   labelnum = size(featdata{n}.gabor,2);
   for m = 1:labelnum
     gabordb(cnt,:) = featdata{n}.gabor{m};
+    cnt = cnt + 1;
   end
 end
 
