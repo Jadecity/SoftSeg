@@ -27,11 +27,13 @@ end
 
 %prepair texture dataset
 gabordb = zeros( gabornum, 48 );
+pixeldb = cell( 1, gaboarnum );
 cnt = 1;
 for n=1:imgnum
   labelnum = size(featdata{n}.gabor,2);
   for m = 1:labelnum
     gabordb(cnt,:) = featdata{n}.gabor{m};
+    pixeldb{cnt} = featdata{n}.pixels;
     cnt = cnt + 1;
   end
 end
@@ -41,3 +43,18 @@ classnum = 200;
 [idx, Cntr] = kmeans(gabordb, classnum, 'distance', 'cosine');
 save idx.mat idx;
 save Cntr.mat Cntr;
+
+%generate a histogram with 100 bins for each class
+binnum = 100;
+hsts = zeros(classnum, binnum);
+for cl = 1:classnum
+  pixblocks = pixeldb{idx==cl};
+  pbnum = size(pixblocks, 2);
+  pixlab = [];
+  for p=1:pbnum
+    pixlab = cat(1, pixlab, pixblocks{p});
+  end
+  hsts(cl) = histab(pixlab, binnum);
+end
+
+save hists.mat hsts;
