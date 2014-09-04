@@ -1,4 +1,3 @@
-function seged = softseg( img, ftdb )
 %SOFTSEG used to make a soft segmentation of an image
 %    function seged = softseg( img )
 %    img: input image, should be in lab color space, M-by-N-by-3
