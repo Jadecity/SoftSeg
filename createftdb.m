@@ -10,7 +10,7 @@ ftdb = cell(2,200);
 
 %use images in a folder to train texture and histogram feature
 path = 'res/images/training'
-imgnum = 1;
+imgnum = 20;
 %a big variable to store all texture and color vector, for clustering afterward
 featdata = cell(1,imgnum);
 gabornum = 0;
@@ -39,3 +39,5 @@ end
 %use kmeans to cluster textures to 200 classes
 classnum = 200;
 [idx, Cntr] = kmeans(gabordb, classnum, 'distance', 'cosine');
+save idx.mat idx;
+save Cntr.mat Cntr;
