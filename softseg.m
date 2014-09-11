@@ -7,7 +7,10 @@ function seged = softseg( img, ftdb )
 %   100 dimension.
 
 %first create soft segmentation seed
+display('starting createseed');
+tic
 seeds = createseed( img, ftdb);
+toc
 
 %add path
 addpath('AppProp');
@@ -16,4 +19,7 @@ addpath('AppProp');
 edit = seeds(:);
 w = size(edit);
 w(g~=0) = 0.5;
+display('starting appProp');
+tic
 prob = appProp( img, g, w);
+toc

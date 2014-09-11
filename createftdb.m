@@ -9,8 +9,9 @@ addpath('c_inference_ver2_2');
 ftdb = cell(2,200);
 
 %use images in a folder to train texture and histogram feature
-path = 'res/images/training'
-imgnum = 20;
+%path = 'res/images/training'
+path = 'res/images/training_test'
+imgnum = 50;
 %a big variable to store all texture and color vector, for clustering afterward
 featdata = cell(1,imgnum);
 gabornum = 0;
@@ -27,7 +28,7 @@ end
 
 %prepair texture dataset
 gabordb = zeros( gabornum, 48 );
-pixeldb = cell( 1, gaboarnum );
+pixeldb = cell( 1, gabornum );
 cnt = 1;
 for n=1:imgnum
   labelnum = size(featdata{n}.gabor,2);
@@ -54,7 +55,12 @@ for cl = 1:classnum
   for p=1:pbnum
     pixlab = cat(1, pixlab, pixblocks{p});
   end
-  hsts(cl) = histab(pixlab, binnum);
+  hsts(cl,:) = histab(pixlab, binnum);
 end
 
 save hists.mat hsts;
+
+for m=1:200
+    ftdb{1,m} = Cntr(m,:);
+    ftdb{2,m} = hsts(m,:);
+end

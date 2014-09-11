@@ -16,28 +16,29 @@ adj = zeros(nodenum, nodenum);
 [ ridx, cidx ] = find(edges == 1);
 ridx = ridx';
 cidx = cidx';
+pointnum = size(ridx,1);
 %create adjacency matrix
-for r=ridx
+for cnt=1:pointnum
+    r = ridx(cnt);
+    c = cidx(cnt);
     %do not touch boundary
     if r == 1 || r == rnum
         continue;
     end
-    for c=cidx
-       %do not touch boundary
-       if c == 1 || c == cnum
-           continue;
-       end
-       
-       adjlab = unique(segment(r-1:r+1, c-1:c+1));
-       adjlab = adjlab';
-       if size(adjlab,2) ~= 1
-            [~, cl] = find( ismember(labels, adjlab ) == 1);
-            pos = nchoosek(cl,2);
-            for rtmp = 1:size(pos,1)
-                adj(pos(rtmp,1), pos(rtmp,2)) = 1;
-            end
-       end
-    end
+   %do not touch boundary
+   if c == 1 || c == cnum
+       continue;
+   end
+
+   adjlab = unique(segment(r-1:r+1, c-1:c+1));
+   adjlab = adjlab';
+   if size(adjlab,2) ~= 1
+        [~, cl] = find( ismember(labels, adjlab ) == 1);
+        pos = nchoosek(cl,2);
+        for rtmp = 1:size(pos,1)
+            adj(pos(rtmp,1), pos(rtmp,2)) = 1;
+        end
+   end
 end
 adj = adj + adj';%symmetric matrix
 
